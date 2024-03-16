@@ -39,59 +39,43 @@ height = 1000;
 width = 2000; 
 
 %plot for expected SDR vs IM for B1 existing and retrofitted buildings
-figure('Position',[100, 100, width, height]); 
+figure 
 for i  = 1:size(PSDA_existingB1,2)
     %plot of the existing B1 buildings
-    subplot(2,2,i)
     plot(intensityLevels, PSDA_existingB1(:,i))
-    xlabel('Ground Motion Intensity Measure (IM)')
-    ylabel('Expected SDR_{max}')
-    if i == 1
-        title('Expected SDR_{max} vs IM for B1 existing buildings at the cripple level')
-    else
-        title('Expected SDR_{max} vs IM for B1 existing buildings at the 1st story level')
-    end
+    hold on
+
 
     %plot of the retrofitting B1 buildings
-    subplot(2,2,i+2)
+
     plot(intensityLevels, PSDA_retrofittedB1(:,i))
-    xlabel('Ground Motion Intensity Measure (IM)')
-    ylabel('Expected SDR_{max}')
-    if i+2 == 3
-        title('Expected SDR_{max} vs IM for B1 retrofitted buildings at the cripple level')
-    else
-        title('Expected SDR_{max} vs IM for B1 retrofitted buildings at the 1st story level')
-    end
+    hold on 
 
 end
+xlabel('Ground Motion Intensity Measure (IM)')
+ylabel('Expected SDR_{max}')
+legend("CrippleWall_{existing}", "CrippleWall_{retrofitted}", "1stStory_{existing}", "1stStory_{retrofitted}")
+title("Expected SDR vs IM for B1 existing and retrofitted buildings")
 saveas(gcf, 'b1sdr.png')
 
 %plot for expected SDR vs IM for B3 existing and retrofitted buildings
-figure('Position',[100, 100, width, height]); 
+figure
 for i  = 1:size(PSDA_existingB3,2)-1
     %plot of the existing B3 buildings
-    subplot(2,2,i)
-    plot(intensityLevels, PSDA_existingB3(:,i))
-    xlabel('Ground Motion Intensity Measure (IM)')
-    ylabel('Expected SDR_{max}')
-    if i == 1
-        title('Expected SDR_{max} vs IM for B3 existing buildings at the cripple level')
-    else
-        title('Expected SDR_{max} vs IM for B3 existing buildings at the 1st story level')
-    end
+
+    plot(intensityLevels, PSDA_existingB3(:,i));
+    hold on
 
     %plot of the retrofitting B3 buildings
-    subplot(2,2,i+2)
+
     plot(intensityLevels, PSDA_retrofittedB3(:,i))
-    xlabel('Ground Motion Intensity Measure (IM)')
-    ylabel('Expected SDR_{max}')
-    if i+2 == 3
-        title('Expected SDR_{max} vs IM for B3 retrofitted buildings at the cripple level')
-    else
-        title('Expected SDR_{max} vs IM for B3 retrofitted buildings at the 1st story level')
-    end
+    hold on
 
 end
+xlabel('Ground Motion Intensity Measure (IM)')
+ylabel('Expected SDR_{max}')
+legend("CrippleWall_{existing}", "CrippleWall_{retrofitted}", "1stStory_{existing}", "1stStory_{retrofitted}")
+title("Expected SDR vs IM for B3 existing and retrofitted buildings")
 saveas(gcf, 'b3sdr.png')
 %%  Part b
 % plot the expected PFA vs expected ground motion SaT1, at the cripple
@@ -118,38 +102,28 @@ PFA_retrofittedB4 = PSDADataRetrofitted{4,1}.medianPFA;
 
 %plot for expected PFA vs IM for B1 existing and retrofitted buildings for
 %1st story level
-figure('Position',[100, 100, width, height]);
-subplot(2,1,1)
+figure
 
 plot(intensityLevels, PFA_existingB1(:,1))
-xlabel('Ground Motion Intensity Measure (IM)')
-ylabel('Expected PFA')
-title('Expected PFA vs IM for B1 existing buildings at the 1st story level')
-
-subplot(2,1,2)
+hold on
 plot(intensityLevels, PFA_retrofittedB1(:,1))
+hold off
 xlabel('Ground Motion Intensity Measure (IM)')
 ylabel('Expected PFA')
-title('Expected PFA vs IM for B1 retrofitted buildings at the 1st story level')
+title('PFA vs IM for B1 existing & retrofitted buildings at the 1st story level')
 saveas(gcf, 'b1PFA.png')
 
 %plot for expected PFA vs IM for B3 existing and retrofitted buildings for
 %1st story level
-figure('Position',[100, 100, width, height]);
-subplot(2,1,1)
+figure
 
 plot(intensityLevels, PFA_existingB3(:,2))
-xlabel('Ground Motion Intensity Measure (IM)')
-ylabel('Expected PFA')
-title('Expected PFA vs IM for B3 existing buildings at the 1st story level')
-
-subplot(2,1,2)
+hold on
 plot(intensityLevels, PFA_retrofittedB3(:,2))
+hold off
 xlabel('Ground Motion Intensity Measure (IM)')
 ylabel('Expected PFA')
-title('Expected PFA vs IM for B3 retrofitted buildings at the 1st story level')
-
-
+title('PFA vs IM for B3 existing & retrofitted buildings at the 1st story level')
 saveas(gcf, 'b3PFA.png')
 
 %% part c
@@ -225,62 +199,47 @@ for i = 1:size(intensityLevels,1)
 
 end
 
-figure('Position',[100, 100, width, height]);
+figure
 for i  = 1:2
     %plot of the existing B1 buildings
-    subplot(2,2,i)
+
     cell_pro_existingB1 = prob_sdr_existing{5,1};
     loglog(sdr', cell_pro_existingB1(:,i))
-    xlabel('Maximum Story Drfit Ratio (SDR)')
-    ylabel('Probability of exceedance P(SDR > sdr)')
-    if i == 1
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B1 existing buildings at the cripple level')
-    else
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B1 existing buildings at the 1st story level')
-    end
+    hold on
 
     %plot of the retrofitting B1 buildings
-    subplot(2,2,i+2)
+
     cell_pro_retrofittedB1 = prob_sdr_retrofitted{5,1};
     loglog(sdr', cell_pro_retrofittedB1(:,i))
-    xlabel('Maximum Story Drfit Ratio (SDR)')
-    ylabel('Probability of exceedance P(SDR > sdr)')
-    if i+2 == 3
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B1 retrofitted buildings at the cripple level')
-    else
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B1 retrofitted buildings at the 1st story level')
-    end
+    hold on
 
 end
+title('P(SDR > sdr) vs sdr for B1  buildings')
+xlabel('SDR')
+ylabel('P(SDR > sdr)')
+legend("CrippleWall_{existing}", "CrippleWall_{retrofitted}", "1stStory_{existing}", "1stStory_{retrofitted}",'Location','southwest')
 saveas(gcf, 'prosdrB1.png')
 
-figure('Position',[100, 100, width, height]);
+figure
 for i  = 1:2 %change this later
     %plot of the existing B3 buildings
-    subplot(2,2,i)
+
     cell_pro_existingB3 = prob_sdr_existing{5,3};
     loglog(sdr', cell_pro_existingB3(:,i))
-    xlabel('Maximum Story Drfit Ratio (SDR)')
-    ylabel('Probability of exceedance P(SDR > sdr)')
-    if i == 1
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B3 existing buildings at the cripple level')
-    else
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B3 existing buildings at the 1st story level')
-    end
+    hold on
+
 
     %plot of the retrofitting B3 buildings
-    subplot(2,2,i+2)
+
     cell_pro_retrofittedB3 = prob_sdr_retrofitted{5,3};
     loglog(sdr', cell_pro_retrofittedB3(:,i))
-    xlabel('Maximum Story Drfit Ratio (SDR)')
-    ylabel('Probability of exceedance P(SDR > sdr)')
-    if i+2 == 3
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B3 retrofitted buildings at the cripple level')
-    else
-        title('Probability of exceedance P(SDR > sdr) vs sdr for B3 retrofitted buildings at the 1st story level')
-    end
+    hold on
 
 end
+title('P(SDR > sdr) vs sdr for B3 buildings')
+xlabel('SDR')
+ylabel('P(SDR > sdr)')
+legend("CrippleWall_{existing}", "CrippleWall_{retrofitted}", "1stStory_{existing}", "1stStory_{retrofitted}", 'Location','southwest')
 saveas(gcf, 'prosdrB3.png')
 
 %% part d
@@ -360,43 +319,48 @@ end
 %plot for probability of exceedance for B1
 prob_pfa_B1(:,1) = prob_pfa_existing{5,1};
 prob_pfa_B1(:,2) = prob_pfa_retrofitted{5,1};
-figure('Position',[100, 100, width, height]);
-list = {'existing', 'retrofitted'};
+
+figure
 for i = 1:size(prob_pfa_B1,2)
-    subplot(2,1,i)
     loglog(pfa', prob_pfa_B1(:,i))
-    xlabel('Peak Floor Acceleration (pfa)')
-    ylabel('Probability of exceedance P(PFA > pfa)')  
-    title(sprintf('Probability of exceedance P(PFA > pfa) vs pfa for B1 %s buildings at the 1st floor level', list{i}))
+    hold on
+
 end
+xlabel('Peak Floor Acceleration (pfa)')
+ylabel('P(PFA > pfa)')  
+title('P(PFA > pfa) vs pfa for B1 buildings at the 1st floor level')
+legend('existing', 'retrofitted')
 saveas(gcf, 'propfaB1.png')
 
 
 %plot for probability of exceedance for B3
 prob_pfa_B3(:,1) = prob_pfa_existing{5,3};
 prob_pfa_B3(:,2) = prob_pfa_retrofitted{5,3};
-figure('Position',[100, 100, width, height]);
-list = {'existing', 'retrofitted'};
+
+figure
 for i = 1:size(prob_pfa_B3,2)
-    subplot(2,1,i)
     loglog(pfa', prob_pfa_B3(:,i))
-    xlabel('Peak Floor Acceleration (pfa)')
-    ylabel('Probability of exceedance P(PFA > pfa)')  
-    title(sprintf('Probability of exceedance P(PFA > pfa) vs pfa for B3 %s buildings at the 1st floor level', list{i}))
+    hold on
+
 end
+xlabel('Peak Floor Acceleration (pfa)')
+ylabel('P(PFA > pfa)')  
+title('P(PFA > pfa) vs pfa for B3 buildings at the 1st floor level')
+legend('existing', 'retrofitted')
 saveas(gcf, 'propfaB3.png')
 
+
 %% part e
-%collapse fragility 
-%values from the problem statement
+collapse fragility 
+values from the problem statement
 collapse_existing(:,1) = [1.22; 2.38; 0.81; 1.41];
 collapse_existing(:,2) = [0.3; 0.6; 0.4; 0.5]; 
 
 collapse_retrofitted(:,1) = [3.15; 4.44; 2.73; 2.67]; 
 collapse_retrofitted(:,2) = [0.3; 0.4; 0.5; 0.5];
 
-log_mean_existing = log(collapse_existing(:,1)) - 0.5*(collapse_existing(:,2).^2);
-log_mean_retrofitted = log(collapse_retrofitted(:,1)) - 0.5*(collapse_retrofitted(:,2).^2);
+log_mean_existing = log(collapse_existing(:,1));
+log_mean_retrofitted = log(collapse_retrofitted(:,1));
 
 for i = 1:length(log_mean_existing)
     for j = 1:size(intensityLevels,1)
@@ -407,19 +371,22 @@ for i = 1:length(log_mean_existing)
 end
 %developing collapse fragility functions 
 buildinglist = {'B1', 'B2', 'B3', 'B4'};
-figure('Position',[100, 100, width, height])
+
 for i = 1:length(log_mean_existing)
-    subplot(2,2, i)
+    figure
     plot(intensityLevels, fragility_exisiting(:,i))
     hold on
     plot(intensityLevels, fragility_retrofitted(:,i))
+    hold on 
     xlabel('Sa_{T} (g)')
     ylabel('Probability of collapse (P_{col})')  
-    title(sprintf('Collapse Fragility function for %s existing and retrofitted buildings', buildinglist{i}))
+    title(sprintf('Collapse Fragility function for %s buildings', buildinglist{i}))
     legend('Existing', 'Retrofitted')
+    filename = sprintf('collapsefragility_%s.png', buildinglist{i});
+    saveas(gcf, filename)
 
 end
-saveas(gcf, 'collapsefragility.png')
+
 
 %% part f
 %damage fragility
@@ -447,23 +414,23 @@ cripple_disp = 0.45;
 
 %damage fragility for gpsum wallboard and exterior stucco
 for i = 1:length(gypsum_median)
-    fragility_gypsum(:,i) = logncdf(sdr, log(gypsum_median(i)) - 0.5*gypsum_disp^2,gypsum_disp);
-    fragility_stucco(:,i) = logncdf(sdr, log(stucco_median(i)) - 0.5*stucco_disp^2, stucco_disp);
-    fragility_cripple(:,i) = logncdf(sdr, log(cripple_median(i)) - 0.5*cripple_disp^2, cripple_disp);
+    fragility_gypsum(:,i) = logncdf(sdr, log(gypsum_median(i)),gypsum_disp);
+    fragility_stucco(:,i) = logncdf(sdr, log(stucco_median(i)), stucco_disp);
+    fragility_cripple(:,i) = logncdf(sdr, log(cripple_median(i)), cripple_disp);
 
 end
 
 for i = 1:length(potableWater_median)
-    fragility_potableWater(:,i) = logncdf(pfa, log(potableWater_median(i)) - 0.5*potableWater_disp^2,potableWater_disp);
-    fragility_hvac(:,i) = logncdf(pfa, log(hvac_median(i)) - 0.5*hvac_disp^2,hvac_disp);
-    fragility_sprinker_water(:,i) = logncdf(pfa, log(sprinkler_water_median(i)) - 0.5*sprinkler_water_disp^2,sprinkler_water_disp);
-    fragility_sprinkler_drop(:,i) = logncdf(pfa, log(sprinkler_drop_median(i)) - 0.5*sprinkler_drop_disp^2,sprinkler_drop_disp);
+    fragility_potableWater(:,i) = logncdf(pfa, log(potableWater_median(i)),potableWater_disp);
+    fragility_hvac(:,i) = logncdf(pfa, log(hvac_median(i)) ,hvac_disp);
+    fragility_sprinker_water(:,i) = logncdf(pfa, log(sprinkler_water_median(i)) ,sprinkler_water_disp);
+    fragility_sprinkler_drop(:,i) = logncdf(pfa, log(sprinkler_drop_median(i)) ,sprinkler_drop_disp);
 
 end
 
-fragility_cermic(:,1) = logncdf(sdr, log(cermic_median)- 0.5*cermic_disp^2,cermic_disp);
-fragility_wallpaper(:,1) = logncdf(sdr, log(wallpaper_median) - 0.5*wallpaper_disp^2,wallpaper_disp);
-fragility_pendant(:,1) = logncdf(pfa, log(pendant_median) - 0.5*pendant_disp^2,pendant_disp);
+fragility_cermic(:,1) = logncdf(sdr, log(cermic_median),cermic_disp);
+fragility_wallpaper(:,1) = logncdf(sdr, log(wallpaper_median) ,wallpaper_disp);
+fragility_pendant(:,1) = logncdf(pfa, log(pendant_median) ,pendant_disp);
 
 %plotting damage fragility for gypsum wallboard
 figure
@@ -529,10 +496,11 @@ buildingNonCollapse = cell(4,2);
 combinedPSDA=[PSDADataExisting, PSDADataRetrofitted];
 
 for a = 1:size(combinedPSDA,2)
+    %extracting the building condition (existing or retrofitted)
     existing = combinedPSDA(:,a);
     for b = 1:numberOfBuildings
             for i = 1:length(intensityLevels)
-            
+
                 for k = 1:size(existing{b,1}.medianSDR,2)
                     if k ~=1
                         %non-collapse for the other story other than cripple wall
@@ -542,33 +510,33 @@ for a = 1:size(combinedPSDA,2)
                             comp_frag = comp_database.CompFrag{j};
                             comp_consq = comp_database.RepairCost{j};
                             comp_qty = comp_database.Qty(j);
-            
+
                             if comp_EDP == "SDR"
-            
+
                                 edp_values = sdr; 
                                 edp_median = existing{b,1}.medianSDR(:,k);
                                 edp_disp = existing{b,1}.logSTDSDR(:,k);
                                 edp_median_idx = edp_median(i);
                                 edp_disp_idx = edp_disp(i);
                             elseif comp_EDP == "PFA" 
-            
+
                                 edp_values = pfa; 
                                 edp_median = existing{b,1}.medianPFA(:,k-1);
                                 edp_disp = existing{b,1}.logSTDPFA(:,k-1);
                                 edp_median_idx = edp_median(i);
                                 edp_disp_idx = edp_disp(i);
-            
+
                             end
-            
+
                             % Loop over all damage states for the current component 
                             E_Lc_IMNC1 = 0;
                             comp_DSnum = length(comp_frag);
-            
-            
+
+
                             for m = 1:comp_DSnum
                                 comp_frag_DS = comp_frag{m}; % the fragility parameters under the current DS for the current component
                                  comp_consq_DS = comp_consq{m}; % the mean loss under the current DS for the current component
-            
+
                                 % Determine the probability of attaining (versus exceedance) the current damage state for the current component (via Eq. 5 in the tutorial)
                                 clear Pr_DS_EDP
                                 if m == comp_DSnum
@@ -577,45 +545,45 @@ for a = 1:size(combinedPSDA,2)
                                     comp_frag_DS_next = comp_frag{m+1};
                                     Pr_DS_EDP = normcdf(log(edp_values/comp_frag_DS(1))/comp_frag_DS(2))- normcdf(log(edp_values/comp_frag_DS_next(1))/comp_frag_DS_next(2));
                                 end
-            
+
                                 % calculate Pr(EDP=edp)*d(edp)
                                 Pr_EDP = [abs(diff(normcdf(log(edp_values/edp_median_idx)/edp_disp_idx))), 1-normcdf(log(edp_values(end)/edp_median_idx)/edp_disp_idx)];
-            
+
                                 % Multiply Pr_DS_EDP by Pr_EDP to obtain Pr(DS=ds|IM,NC) (eq.4)
                                 Pr_DS_IM = Pr_DS_EDP * Pr_EDP';
-            
+
                                 %Append the loss under the current DS(Eq.3)
                                 E_Lc_IMNC_total = E_Lc_IMNC1 + Pr_DS_IM*comp_qty*comp_consq_DS;
-            
+
                             end % end DS_idx
-            
+
                             Loss_comp_IM(j+1,k-1) = E_Lc_IMNC_total;  
-                      
+
                         end
-            
-                        
+
+
                     else
                            %cripple wall calculations
                            %values for the cripple wall
                             comp_frag = {[0.0053, 0.45], [0.0132, 0.45], [0.0396, 0.45]};
                             comp_consq = {1195,1696,5225};
                             comp_qty = 2;
-            
+
                             edp_values = sdr; 
                             edp_median = existing{b,1}.medianSDR(:,1);
                             edp_disp = existing{b,1}.logSTDSDR(:,1);
                             edp_median_idx = edp_median(i);
                             edp_disp_idx = edp_disp(i);
-            
+
                             % Loop over all damage states for the current component 
                             E_Lc_IMNC = 0; % initiate the loss for the current component under the current IM. It will later be accumulated during the loop (via Eq.3 in the tutorial)
                             comp_DSnum = length(comp_frag);
-            
-            
+
+
                             for j = 1:comp_DSnum
                             comp_frag_DS = comp_frag{j}; % the fragility parameters under the current DS for the current component
                             comp_consq_DS = comp_consq{j}; % the mean loss under the current DS for the current component
-            
+
                             % Determine the probability of attaining (versus exceedance) the current damage state for the current component (via Eq. 5 in the tutorial)
                             clear Pr_DS_EDP
                             if j == comp_DSnum
@@ -624,23 +592,23 @@ for a = 1:size(combinedPSDA,2)
                                 comp_frag_DS_next = comp_frag{j+1};
                                 Pr_DS_EDP = normcdf(log(edp_values/comp_frag_DS(1))/comp_frag_DS(2))- normcdf(log(edp_values/comp_frag_DS_next(1))/comp_frag_DS_next(2));
                             end
-            
+
                             % calculate Pr(EDP=edp)*d(edp)
                             Pr_EDP = [abs(diff(normcdf(log(edp_values/edp_median_idx)/edp_disp_idx))), 1-normcdf(log(edp_values(end)/edp_median_idx)/edp_disp_idx)];
-            
+
                             % Multiply Pr_DS_EDP by Pr_EDP to obtain Pr(DS=ds|IM,NC) (eq.4)
                             Pr_DS_IM = Pr_DS_EDP * Pr_EDP';
-            
+
                             %Append the loss under the current DS(Eq.3)
                             E_Lc_IMNC = E_Lc_IMNC + Pr_DS_IM*comp_qty*comp_consq_DS;
                             end
-            
-                            
+
+
                             Loss_comp_IM(1,k) = E_Lc_IMNC;
-            
+
                     end
-                    
-                    
+
+
                 end
                 if size(Loss_comp_IM,2) == 1
                     total_loss(:,i) = Loss_comp_IM;
@@ -653,38 +621,50 @@ for a = 1:size(combinedPSDA,2)
     end
 end
 
-%plot for existing and retrofitted B1 and B4
-exist_retrofit_B1 = buildingNonCollapse(1,:);
-exist_retrofit_B4 = buildingNonCollapse(4,:);
+%probability of non-collapse existing and retrofitted buildings
+for i = 1:size(fragility_exisiting,2)
+    NonCollapse_fragility_existing(:,i) = 1-fragility_exisiting(:,i);
+    NonCollapse_fragility_retrofitted(:,i) = 1 - fragility_retrofitted(:,i);
+end
+
+%existing & retrofitted non-collapse loss
+for i = 1:size(buildingNonCollapse,1)
+    non_collapse_index = buildingNonCollapse(i,:);
+    Non_collapse_existing(:,i) = NonCollapse_fragility_existing(:,i) .* sum(cell2mat(non_collapse_index(:,1)),1)';
+    Non_collapse_retrofitted(:, i) = NonCollapse_fragility_retrofitted(:,i) .* sum(cell2mat(non_collapse_index(:,2)),1)';
+
+end
+
 
 %total for both existing and retrofit for B1
-exist_B1 = sum(cell2mat(exist_retrofit_B1(:,1)),1);
-retrofit_B1 = sum(cell2mat(exist_retrofit_B1(:,2)),1);
+exist_B1 = Non_collapse_existing(:,1);
+retrofit_B1 = Non_collapse_retrofitted(:,1);
 
 %total for both existing and retrofit for B4
-exist_B4 = sum(cell2mat(exist_retrofit_B4(:,1)),1);
-retrofit_B4 = sum(cell2mat(exist_retrofit_B4(:,2)),1);
+exist_B4 = Non_collapse_existing(:,4);
+retrofit_B4 = Non_collapse_retrofitted(:,4);
 
 figure
 plot(intensityLevels, exist_B1)
 hold on 
-plot(intensityLevels, exist_B4)
+plot(intensityLevels, retrofit_B1)
 hold off
 xlabel("IM")
 ylabel("E(L_T|NC)")
-title("Non-collapse loss for existing B1 & B4 Buildings")
-legend("Existing", "Retrofitted")
-saveas(gcf, 'nonCollpase')
+title("Non-collapse loss for B1 buildings")
+legend("B1_{Existing}", "B1_{Retrofitted}", 'Location','northwest')
+saveas(gcf, 'nonCollpaseB1.png')
 
 figure
-plot(intensityLevels, retrofit_B1)
+plot(intensityLevels, exist_B4)
 hold on 
 plot(intensityLevels, retrofit_B4)
 hold off
 xlabel("IM")
 ylabel("E(L_T|NC)")
-title("Non-collapse loss for retrofitted B1 & B4 Buildings")
-legend("Existing", "Retrofitted")
+title("Non-collapse loss for B4 buildings")
+legend("B4_{Existing}", "B4_{Retrofitted}", 'Location','northwest')
+saveas(gcf, 'nonCollpaseB4.png')
 %% part h) 
 
 collapse_existing(:,1) = [1.22; 2.38; 0.81; 1.41];
@@ -707,6 +687,12 @@ replacement_cost(2,1) = (150 * 1400); % B2
 replacement_cost(3,1) = (150 * 2800); % B3
 replacement_cost(4,1) = (150 * 2800); % B4
 
+% cost = construction costs + cripple wall retrofit
+replacement_cost_retrofitted(1,1) = (150 + 4) * 1400; % B1
+replacement_cost_retrofitted(2,1) = (150 + 4) * 1400; % B2
+replacement_cost_retrofitted(3,1) = (150 + 4) * 2800; % B3
+replacement_cost_retrofitted(4,1) = (150 + 4) * 2800; % B4
+
 % solve for existing buildings
 for i = 1:numberOfBuildings % for 4 building types
     CollapseMed = collapse_existing(i,1);
@@ -719,39 +705,72 @@ end
 for i = 1:numberOfBuildings % for 4 building types
     CollapseMed = collapse_retrofitted(i,1);
     CollapseDisp = collapse_retrofitted(i,2);
-    reconstruction_cost = replacement_cost(i);
+    reconstruction_cost = replacement_cost_retrofitted(i);
 
     collapse_loss_retrofitted(:,i) = reconstruction_cost*normcdf(log(intensityLevels/CollapseMed)/CollapseDisp);
 end 
 
-% plot for building types B1 and B4 (existing and retrofitted)
+% plot for building types B1 (existing and retrofitted)
 figure
 
 plot(intensityLevels,collapse_loss_existing(:,1))
 hold on
-plot(intensityLevels,collapse_loss_existing(:,4))
+plot(intensityLevels,collapse_loss_retrofitted(:,1))
 hold off
-title("Expected Collapse Loss for B1 & B4 (existing)")
+title("Expected Collapse Loss for B1 buildings")
 xlabel("Intensity Level")
 ylabel("Expected Collapse Loss")
-legend("B1_existing", "B4_existing")
-saveas(gcf, 'collapseExisting.png')
+legend("B1_{existing}", "B1_{retrofitted}", 'Location','northwest')
+saveas(gcf, 'collapseB1.png')
 
 figure
-plot(intensityLevels,collapse_loss_retrofitted(:,1))
+plot(intensityLevels,collapse_loss_existing(:,4))
 hold on 
 plot(intensityLevels,collapse_loss_retrofitted(:,4))
 hold off
-title("Expected Collapse Loss for B1 & B4 (retrofitted)")
+title("Expected Collapse Loss for B4 buildings")
 xlabel("IM")
 ylabel("Expected Collapse Loss")
-legend("B1_retrofitted", "B4_retrofitted")
-saveas(gcf, 'collapseRetrofit.png')
+legend("B4_{existing}", "B4_{retrofitted}",'Location','northwest')
+saveas(gcf, 'collapseB4.png')
 
 %% part i
 % use total probability theorem to compute the expected direct loss at each intensity
 % measure and report the results in a plot for B1 and B4 (existing and retrofitted)
 
+%sum of the loss for the collapse and non-collapse E(LT|SA, NC)P(NC|SA) +
+%E(LT|SA,C)P(C|SA) = E(LT|SA)
+total_directLoss_existing = Non_collapse_existing + collapse_loss_existing;
+total_directLoss_retrofitted = Non_collapse_retrofitted + collapse_loss_retrofitted;
+
+%direct loss for B1 buildings (existing and retrofitted)
+figure
+plot(intensityLevels,collapse_loss_existing(:,1))
+hold on 
+plot(intensityLevels,collapse_loss_retrofitted(:,1))
+hold on
+plot(intensityLevels, total_directLoss_existing(:,1), '--')
+hold on
+plot(intensityLevels, total_directLoss_retrofitted(:,1), '--')
+title("Direct Loss for existing and retrofitted B1 Buildings")
+xlabel("IM")
+ylabel("Direct Collapse Loss")
+legend("B1_{existing}", "B1_{retrofitted}", "B1_{DirectLossExisting}", "B1_{DirectLossRetrofitted}",'Location','southeast')
+saveas(gcf, 'DirectB1.png')
+
+figure
+plot(intensityLevels,collapse_loss_existing(:,4))
+hold on 
+plot(intensityLevels,collapse_loss_retrofitted(:,4))
+hold on
+plot(intensityLevels, total_directLoss_existing(:,4), '--')
+hold on
+plot(intensityLevels, total_directLoss_retrofitted(:,4), '--')
+title("Direct Loss for existing and retrofitted B4 buildings")
+xlabel("IM")
+ylabel("Direct Collapse Loss")
+legend("B4_{existing}", "B4_{retrofitted}", "B4_{DirectLossExisting}", "B4_{DirectLossRetrofitted}",'Location','southeast')
+saveas(gcf, 'DirectB4.png')
 %% part j
 % Use the replacement times provided to plot the  indirect loss (due to temporary housing costs) 
 % versus SaT1 for building types B1 and B4 (existing and retrofitted).
@@ -773,139 +792,214 @@ end
 for i = 1:numberOfBuildings
     indirect_loss_retrofitted(:,i) = SaT1VsRecoveryTime(:,3) * replacement_time(i) * temp_housing_cost(i);
 end 
-%plot of the indirect losses for existing and retrofitted B1 and B4
+%plot of the indirect losses for existing and retrofitted B1 
 
 figure
 plot(SaT1VsRecoveryTime(:,1),indirect_loss_existing(:,1))
 hold on
-plot(SaT1VsRecoveryTime(:,1),indirect_loss_existing(:,4))
+plot(SaT1VsRecoveryTime(:,1),indirect_loss_retrofitted(:,1))
 hold off
-title("Indirect Loss for B1 & B4(existing)")
-xlabel("Sa_T1")
+title("Indirect Loss for existing and retrofitted B1 buildings")
+xlabel("Sa_{T1}")
 ylabel("Indirect Loss")
-legend("B1_existing", "B4_existing")
-saveas(gcf, 'saT1recoveryExisting.png')
+legend("B1_{existing}", "B1_{retrofitted}",'Location','northwest')
+saveas(gcf, 'saT1recoveryB1.png')
 
 figure
-plot(SaT1VsRecoveryTime(:,1),indirect_loss_retrofitted(:,1))
+plot(SaT1VsRecoveryTime(:,1),indirect_loss_existing(:,4))
 hold on
 plot(SaT1VsRecoveryTime(:,1),indirect_loss_retrofitted(:,4))
 hold off
-title("Indirect Loss for B1 & B4(retrofitted)")
-xlabel("Sa_T1")
+title("Indirect Loss for existing and retrofitted B4 buildings")
+xlabel("Sa_{T1}")
 ylabel("Indirect Loss")
-legend("B1_existing", "B4_existing")
-saveas(gcf, 'saT1recoveryRetrofit.png')
+legend("B4_{existing}", "B4_{retrofitted}",'Location','northwest')
+saveas(gcf, 'saT1recoveryB4.png')
 
 %% part k
 % Compute the total (indirect + direct) loss versus SaT1 for B1 and B4 (existing and retrofitted)
 % Overlay the plots from parts (i), (j) and (k) in the same figure (one for each building type).
 
-%% part L
+for i = 1:length(intensityLevels)
+    for j = 1:size(indirect_loss_retrofitted,2)
+            inter_indirect_loss_existing(i,j) = interp1(SaT1VsRecoveryTime(:,1),indirect_loss_existing(:,j), intensityLevels(i), 'cubic');
+            inter_indirect_loss_retrofitted(i,j) = interp1(SaT1VsRecoveryTime(:,1),indirect_loss_retrofitted(:,j), intensityLevels(i));
+    end
+end
 
-% fault_start = [2;1];
-% fault_end = [19;9];
-% 
-% %coordinates for the 51 points along the fault
-% x_cord_fault = linspace(fault_start(1), fault_end(1), 51);
-% y_cord_fault = linspace(fault_start(2), fault_end(2), 51);
-% 
-% fault_coord(:,1) = x_cord_fault';
-% fault_coord(:,2) = y_cord_fault';
-% 
-% for i = 1:size(BuildingCoordinates,1)
-%     buildingcoord = BuildingCoordinates(i,:);
-%     for j = 1:size(fault_coord,1)
-%         %distance from the building site to each 51 epicenter locations
-%         site_dist(i,j) = norm(buildingcoord' - fault_coord(j,:)');
-%     end
-% end
-% %inverse cdf of magnitudes
-% Mmin = 6;
-% Mmax = 8; 
-% 
-% y = rand(100,1);
-% 
-% b =1;
-% 
-% for i = 1:size(y,1)
-%     m(i) = Mmin - log10(1 - y(i)*(1 - 10^(-b*(Mmax - Mmin))))/b;
-% end
-% 
-% %computing the log-mean for the intensity measure
-% 
-% %converting the 50x51 matrix to a column 
-% u = 1;
-% for i = 1:size(site_dist, 1)
-%     convert_site_dist(u:u+size(site_dist,1)) = site_dist(i,:);
-%     u = u+size(site_dist,2);
-% end
-% PGA = 0.01:0.01:6;
-% 
-% e1 = 0.4383; 
-% e2 = 0.106;
-% c1 = -0.5543;
-% c2 = 0.0195; 
-% c3 = -0.0075; 
-% gamma = 0.01; 
-% 
-% std_SA = 0.6;
-% mean_InSA = cell(size(m,2), 1);
-% %mean of the PGA (Sa)
-% for i = 1:size(m,2)
-%     row_meanInSA = zeros(1, size(convert_site_dist,2)); 
-%     for j = 1:size(convert_site_dist,2)
-%             row_meanInSA(1, j) = e1 + e2 *(m(i) - 6.75) + (c1 + c2 *(m(i) - 4.5))*log(convert_site_dist(j)) + c3 *(convert_site_dist(j)-1)+0.5646;
-% 
-%     end
-%     mean_InSA{i} = reshape(row_meanInSA, [size(site_dist,1),size(site_dist,2)]);
-% end
-% 
-% %generating shaking intensities per event 
-% n = 50; %number of samples for monte carlos simulation
-% monte_sample=rand(n,1);
-% cellmat_meanInSA = cell2mat(mean_InSA);
-% 
-% for i = 1:size(monte_sample,1)
-%     for j = 1:size(cellmat_meanInSA,1)
-%         row_shake_IM(j,:) = logninv(monte_sample(i), cellmat_meanInSA(j,:), std_SA);
-%     end
-%     shake_IM{i} = row_shake_IM;
-% end
-% 
-% % reshape the shaking intensities matrix (50 rows (sites) x 255000 intensities)
-% site_SaT1 = zeros(50,255000);
-% shakeIM_expanded = cell2mat(shake_IM);
-% index = 1;
-% for i = 1:50:4951
-%     site_SaT1(1:50,index:index+2549) = shakeIM_expanded(i:i+49,:);
-%     index = index + 2549;
-% end
-% 
-% % lambda(SaT1) computed as the fraction of realizations times lambda(M>m_min)
-% lambda_SaT1 = zeros(50,600);
-% PGA = 0.01:0.01:6;
-% for i = 1:50
-%     for j = 1:length(PGA)
-%         counter = 0;
-%         for k = 1:size(site_SaT1,2)
-%             if site_SaT1(i,k) > PGA(j)
-%                 counter = counter + 1;
-%             end
-%         end
-%         lambda_SaT1(i,j) = gamma* (counter/255000);
-%     end
-% end
-% 
-% figure
-% %hazard curve for 1st building/site
-% loglog(PGA,lambda_SaT1(1,:))
-% saveas(gcf, 'hazard-curve1')
-% %hazard curve for 1st building/site
-% figure
-% loglog(PGA,lambda_SaT1(25,:))
-% saveas(gcf, 'hazard_curve25')
-% %hazard curve for 1st building/site
-% figure
-% loglog(PGA,lambda_SaT1(50,:))
-% saveas(gcf, 'hazard_curve50')
+%total loss (direct + indirect loss)
+total_loss_retrofitted = inter_indirect_loss_retrofitted + total_directLoss_retrofitted;
+total_loss_existing = inter_indirect_loss_existing + total_directLoss_existing;
+
+%plot for B1
+figure
+plot(intensityLevels,total_loss_existing(:,1))
+hold on
+plot(intensityLevels,total_loss_retrofitted(:,1))
+hold on
+plot(intensityLevels,inter_indirect_loss_existing(:,1), '--')
+hold on
+plot(intensityLevels,inter_indirect_loss_retrofitted(:,1), '--')
+hold on
+plot(intensityLevels,total_directLoss_existing(:,1), '*-')
+hold on
+plot(intensityLevels,total_directLoss_retrofitted(:,1), '*-')
+
+
+title("Total Loss for existing and retrofitted B1 buildings")
+xlabel("IM")
+ylabel("Direct Loss")
+legend("B1_{TotalLossExisting}", "B1_{TotalLossRetrofitted}","B1_{IndirectLossExisting}", "B1_{IndirectLossRetrofitted}", "B1_{directLossExisting}","B1_{directLossRetrofitted}",'Location','southeast')
+saveas(gcf, 'totalLossB1.png')
+
+%plot for B4
+figure
+plot(intensityLevels,total_loss_existing(:,4))
+hold on
+plot(intensityLevels,total_loss_retrofitted(:,4))
+hold on
+plot(intensityLevels,inter_indirect_loss_existing(:,4), '--')
+hold on
+plot(intensityLevels,inter_indirect_loss_retrofitted(:,4), '--')
+hold on
+plot(intensityLevels,total_directLoss_existing(:,4), '*-')
+hold on
+plot(intensityLevels,total_directLoss_retrofitted(:,4), '*-')
+
+
+title("Total Loss for existing and retrofitted B4 buildings")
+xlabel("IM")
+ylabel("Direct Loss")
+legend("B4_{TotalLossExisting}", "B4_{TotalLossRetrofitted}","B4_{IndirectLossExisting}", "B4_{IndirectLossRetrofitted}", "B4_{directLossExisting}","B4_{directLossRetrofitted}",'Location','southeast')
+saveas(gcf, 'totalLossB4.png')
+
+part L
+
+fault_start = [2;1];
+fault_end = [19;9];
+
+%coordinates for the 51 points along the fault
+x_cord_fault = linspace(fault_start(1), fault_end(1), 51);
+y_cord_fault = linspace(fault_start(2), fault_end(2), 51);
+
+fault_coord(:,1) = x_cord_fault';
+fault_coord(:,2) = y_cord_fault';
+
+for i = 1:size(BuildingCoordinates,1)
+    buildingcoord = BuildingCoordinates(i,:);
+    for j = 1:size(fault_coord,1)
+        %distance from the building site to each 51 epicenter locations
+        site_dist(i,j) = norm(buildingcoord' - fault_coord(j,:)');
+    end
+end
+%inverse cdf of magnitudes
+Mmin = 6;
+Mmax = 8; 
+
+y = rand(100,1);
+
+b =1;
+
+for i = 1:size(y,1)
+    m(i) = Mmin - log10(1 - y(i)*(1 - 10^(-b*(Mmax - Mmin))))/b;
+end
+
+%computing the log-mean for the intensity measure
+
+%converting the 50x51 matrix to a column 
+u = 1;
+for i = 1:size(site_dist, 1)
+    convert_site_dist(u:u+size(site_dist,1)) = site_dist(i,:);
+    u = u+size(site_dist,2);
+end
+PGA = 0.01:0.01:6;
+
+e1 = 0.4383; 
+e2 = 0.106;
+c1 = -0.5543;
+c2 = 0.0195; 
+c3 = -0.0075; 
+gamma = 0.01; 
+
+std_SA = 0.6;
+mean_InSA = cell(size(m,2), 1);
+%mean of the PGA (Sa)
+for i = 1:size(m,2)
+    row_meanInSA = zeros(1, size(convert_site_dist,2)); 
+    for j = 1:size(convert_site_dist,2)
+            row_meanInSA(1, j) = e1 + e2 *(m(i) - 6.75) + (c1 + c2 *(m(i) - 4.5))*log(convert_site_dist(j)) + c3 *(convert_site_dist(j)-1)+0.5646;
+
+    end
+    mean_InSA{i} = reshape(row_meanInSA, [size(site_dist,1),size(site_dist,2)]);
+end
+
+%generating shaking intensities per event 
+n = 50; %number of samples for monte carlos simulation
+monte_sample=rand(n,1);
+cellmat_meanInSA = cell2mat(mean_InSA);
+
+for i = 1:size(monte_sample,1)
+    for j = 1:size(cellmat_meanInSA,1)
+        row_shake_IM(j,:) = logninv(monte_sample(i), cellmat_meanInSA(j,:), std_SA);
+    end
+    shake_IM{i} = row_shake_IM;
+end
+
+%reshaping the shaking intensities matrix
+for i = 1:size(shake_IM,2)
+    shakeIM_index = shake_IM{i};
+    k = 1;
+    for j = 1:size(m,2)
+        reshape_shakeIM{j,i} = shakeIM_index(k:k+49, :);
+        k = k+50;
+    end
+end
+
+% reshape the shaking intensities matrix (50 rows (sites) x 255000 intensities)
+site_SaT1 = zeros(50,255000);
+shakeIM_expanded = cell2mat(shake_IM);
+index = 1;
+for i = 1:50:4951
+    site_SaT1(1:50,index:index+2549) = shakeIM_expanded(i:i+49,:);
+    index = index + 2549;
+end
+
+% lambda(SaT1) computed as the fraction of realizations times lambda(M>m_min)
+lambda_SaT1 = zeros(50,600);
+PGA = 0.01:0.01:6;
+for i = 1:50
+    for j = 1:length(PGA)
+        counter = 0;
+        for k = 1:size(site_SaT1,2)
+            if site_SaT1(i,k) > PGA(j)
+                counter = counter + 1;
+            end
+        end
+        lambda_SaT1(i,j) = gamma* (counter/255000);
+    end
+end
+
+figure
+%hazard curve for 1st building/site
+loglog(PGA,lambda_SaT1(1,:))
+ylabel('Annual Rate of Exceedance')
+xlabel('Sa_{T1}')
+title('Hazard Curve for building site 1')
+saveas(gcf, 'hazard-curve1.png')
+%hazard curve for 25th building/site
+figure
+loglog(PGA,lambda_SaT1(25,:))
+ylabel('Annual Rate of Exceedance')
+xlabel('Sa_{T1}')
+title('Hazard Curve for building site 25')
+saveas(gcf, 'hazard_curve25.png')
+%hazard curve for 50th building/site
+figure
+loglog(PGA,lambda_SaT1(50,:))
+ylabel('Annual Rate of Exceedance')
+xlabel('Sa_{T1}')
+title('Hazard Curve for building site 50')
+saveas(gcf, 'hazard_curve50.png')
+
+% %% part m
+% % regional loss curve 
