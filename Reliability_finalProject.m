@@ -111,6 +111,7 @@ hold off
 xlabel('Ground Motion Intensity Measure (IM)')
 ylabel('Expected PFA')
 title('PFA vs IM for B1 existing & retrofitted buildings at the 1st story level')
+legend("Existing", "Retrofitted")
 saveas(gcf, 'b1PFA.png')
 
 %plot for expected PFA vs IM for B3 existing and retrofitted buildings for
@@ -124,6 +125,7 @@ hold off
 xlabel('Ground Motion Intensity Measure (IM)')
 ylabel('Expected PFA')
 title('PFA vs IM for B3 existing & retrofitted buildings at the 1st story level')
+legend("Existing", "Retrofitted")
 saveas(gcf, 'b3PFA.png')
 
 %% part c
@@ -351,8 +353,8 @@ saveas(gcf, 'propfaB3.png')
 
 
 %% part e
-collapse fragility 
-values from the problem statement
+% collapse fragility 
+% values from the problem statement
 collapse_existing(:,1) = [1.22; 2.38; 0.81; 1.41];
 collapse_existing(:,2) = [0.3; 0.6; 0.4; 0.5]; 
 
@@ -553,11 +555,11 @@ for a = 1:size(combinedPSDA,2)
                                 Pr_DS_IM = Pr_DS_EDP * Pr_EDP';
 
                                 %Append the loss under the current DS(Eq.3)
-                                E_Lc_IMNC_total = E_Lc_IMNC1 + Pr_DS_IM*comp_qty*comp_consq_DS;
+                                E_Lc_IMNC1 = E_Lc_IMNC1 + Pr_DS_IM*comp_qty*comp_consq_DS;
 
                             end % end DS_idx
 
-                            Loss_comp_IM(j+1,k-1) = E_Lc_IMNC_total;  
+                            Loss_comp_IM(j+1,k-1) = E_Lc_IMNC1;  
 
                         end
 
@@ -665,6 +667,8 @@ ylabel("E(L_T|NC)")
 title("Non-collapse loss for B4 buildings")
 legend("B4_{Existing}", "B4_{Retrofitted}", 'Location','northwest')
 saveas(gcf, 'nonCollpaseB4.png')
+
+
 %% part h) 
 
 collapse_existing(:,1) = [1.22; 2.38; 0.81; 1.41];
@@ -873,7 +877,7 @@ ylabel("Direct Loss")
 legend("B4_{TotalLossExisting}", "B4_{TotalLossRetrofitted}","B4_{IndirectLossExisting}", "B4_{IndirectLossRetrofitted}", "B4_{directLossExisting}","B4_{directLossRetrofitted}",'Location','southeast')
 saveas(gcf, 'totalLossB4.png')
 
-part L
+%% part L
 
 fault_start = [2;1];
 fault_end = [19;9];
@@ -980,26 +984,312 @@ for i = 1:50
 end
 
 figure
-%hazard curve for 1st building/site
-loglog(PGA,lambda_SaT1(1,:))
-ylabel('Annual Rate of Exceedance')
-xlabel('Sa_{T1}')
-title('Hazard Curve for building site 1')
-saveas(gcf, 'hazard-curve1.png')
-%hazard curve for 25th building/site
-figure
-loglog(PGA,lambda_SaT1(25,:))
-ylabel('Annual Rate of Exceedance')
-xlabel('Sa_{T1}')
-title('Hazard Curve for building site 25')
-saveas(gcf, 'hazard_curve25.png')
-%hazard curve for 50th building/site
-figure
-loglog(PGA,lambda_SaT1(50,:))
-ylabel('Annual Rate of Exceedance')
-xlabel('Sa_{T1}')
-title('Hazard Curve for building site 50')
-saveas(gcf, 'hazard_curve50.png')
+%hazard curve for 1st building/site 
+site_positions = [1,25,50];
+list_site = {'1','25','50'};
+for i = 1:length(site_positions)
+    figure
+    loglog(PGA,lambda_SaT1(site_positions(i),:))
+    xlabel('Sa_{T1}')
+    ylabel('Annual Rate of Exceedance')  
+    title(sprintf('Hazard Curve for building site %s', list_site{i}));
+    filename = sprintf('HazardCurve_%s.png', list_site{i});
+    saveas(gcf, filename)
+end
 
-% %% part m
-% % regional loss curve 
+%% part m
+% generate and plot a loss curve for the existing inventory. This plot will 
+% have the total loss for all 50 buildings on the horizontal axis and the annual
+% exceedance rate on the vertical axis
+
+% number of rupture scenarios 
+NM = 100; % number of magnitudes
+NFS = 50; % number of fault segments
+NEP = 51; % number of epicenter locations
+NS = 50; % number of samples (SaT1 realizations)
+I = NM * (NFS + 1);
+
+% reshape_shakeIM = cell(100,50);
+% % reshaping the shaking intensities matrix
+% for i = 1:size(shake_IM,2)
+%     shakeIM_index = shake_IM{i};
+%     k = 1;
+%     for j = 1:size(m,2)
+%         reshape_shakeIM{j,i} = shakeIM_index(k:k+49, :);
+%         k = k+50;
+%     end
+% end
+
+% intialize 4D array to store building specific realizations
+% cell = (magnitude,sample_number,building site,epicenter location)
+building_specific_realizations_existing = zeros(100,50,50,51);
+building_specific_realizations_retrofitted= zeros(100,50,50,51);
+
+% intialize 3D array to store event loss realizations
+% cell = (magnitude, sample, epicenter location)
+event_loss_realizations_existing = zeros(100,50,51);
+event_loss_realizations_retrofitted = zeros(100,50,51);
+
+% loop over number of magnitudes
+for i = 1:NM
+    % loop over number of epicenter locations
+    for j = 1:NEP
+        % loop over number of samples per event
+        for m = 1:50
+            % loop over the number of buildings
+            for k = 1:50
+                % define building ID for current building
+                buildingID = BuildingTypesAndCoordinates(k,3);
+
+                % extract current SaT1
+                current_SaT1 = reshape_shakeIM{i,m}(k,j);
+
+                % extract corresponding losses
+                if current_SaT1 > max(intensityLevels)
+                    % existing
+                    building_specific_realizations_existing(i,m,k,j) = ...
+                        max(total_loss_existing(:,buildingID));
+                    % retrofitted
+                    building_specific_realizations_retrofitted(i,m,k,j) = ...
+                        max(total_loss_retrofitted(:,buildingID));
+                elseif current_SaT1 < min(intensityLevels)
+                    % existing
+                     building_specific_realizations_existing(i,m,k,j) = ...
+                        min(total_loss_existing(:,buildingID));
+                     % retrofitted
+                     building_specific_realizations_retrofitted(i,m,k,j) = ...
+                        min(total_loss_retrofitted(:,buildingID));
+                else
+                    % existing
+                    building_specific_realizations_existing(i,m,k,j) = ...
+                    interp1(intensityLevels,total_loss_existing(:,buildingID),...
+                    current_SaT1);
+                    % retrofitted
+                    building_specific_realizations_retrofitted(i,m,k,j) = ...
+                    interp1(intensityLevels,total_loss_retrofitted(:,buildingID),...
+                    current_SaT1);
+                end
+            end
+            % compute the reigonal loss for all buildings for current
+            % sample (existing and retrofitted)
+            event_loss_realizations_existing(i,m,j) = ...
+            sum(building_specific_realizations_existing(i,m,:,j));
+
+            event_loss_realizations_retrofitted(i,m,j) = ...
+            sum(building_specific_realizations_retrofitted(i,m,:,j));
+        end
+    end
+end
+
+% convert event loss realizations to a vector 
+event_loss_existing = reshape(event_loss_realizations_existing,[1,255000]);
+
+% compute minimum and maximum loss
+loss_min = min(event_loss_existing);
+loss_max = max(event_loss_existing);
+
+% define loss vector (horizontal axis of annual loss exceedance curve)
+loss_vector = loss_min:(loss_max-loss_min)/50:loss_max;
+
+% define lambda
+lambda = 0.01;
+
+% define lambda_rl vector  
+lambda_rl = zeros(1,length(loss_vector));
+
+% loop over the number of loss levels
+for i = 1:length(loss_vector)
+    % compute rate of exceedance of the current loss level
+    count = 0;
+    for j = 1:length(event_loss_existing)
+        if event_loss_existing(j) > loss_vector(i)
+            count = count + 1;
+        end
+    end
+    P_rl = count/255000;
+    lambda_rl(i) = P_rl * lambda;
+end
+
+% plot loss curve for the existing inventory (total loss horizontal axis,
+% annual exceedance rate vertical axis)
+figure
+plot(loss_vector,lambda_rl)
+title("Loss Curve for existing inventory")
+xlabel("Total loss")
+ylabel("Annual rate of exceedance")
+saveas(gcf, "exist.png")
+
+%% part n
+% decide which buildings/residences to retrofit 
+
+% retrofit budget
+retrofit_budget = 200000;
+
+% define array to store building expected losses (average of event losses
+% for each building)
+building_expected_loss_existing = zeros(50,1);
+building_expected_loss_retrofitted = zeros(50,1);
+
+for i = 1:50 % loop through number of buildings
+    building_expected_loss_existing(i,1) = sum(building_specific_realizations_existing(:,:,i,:),"all")...
+        /255000;
+    building_expected_loss_retrofitted(i,1) = sum(building_specific_realizations_retrofitted(:,:,i,:),"all")...
+        /255000;
+end
+
+% solve for reduced expected losses by retrofitting (use negative values)
+reduced_expected_losses = building_expected_loss_retrofitted - ...
+    building_expected_loss_existing;
+f = reduced_expected_losses;
+
+% want to maximize reduced expected loss while staying under 200k budget
+% define retrofit costs per building type [B1,B2,B3,B4]
+retrofit_cost = 4*[1400 1400 2800 2800];
+
+% The inequality constraints matrix and vector
+buildingTypes = BuildingTypesAndCoordinates(:,3);
+A = zeros(1,50);
+for i = 1:length(buildingTypes)
+    A(i) = retrofit_cost(buildingTypes(i));
+end
+
+b = retrofit_budget;
+
+% Lower and upper bounds for the variables to constrain the coefficients to
+% be either 0 or 1
+lb = zeros(50, 1); % Lower bound (0)
+ub = ones(50, 1); % Upper bound (1)
+intcon = 1:50; % All variables are integer constraints
+
+% Solve the problem
+opts = optimoptions('intlinprog', 'Display', 'off');
+[x, fval] = intlinprog(f, intcon, A, b, [], [], lb, ub, opts);
+% Display the solution
+disp('Retrofit Buildings:')
+disp(x)
+% Display the maximum value
+disp('Maximum reduced expected loss:')
+disp(-fval) % Negate because we minimized the negative of the objective
+BuildingTypesAndCoordinates(:,4) = x;
+
+% calculate total retrofit cost (<200000) x is vector indexing retrofits
+total_retrofit_cost = 0;
+for i = 1:length(x)
+    if x(i) == 1
+        total_retrofit_cost = total_retrofit_cost + retrofit_cost(buildingTypes(i));
+    end
+end
+disp('Total Retrofit Cost:')
+disp(total_retrofit_cost)
+
+% Generate and plot the loss curve based on the partially retrofitted inventory
+
+% intialize 4D array to store building specific realizations
+% cell = (magnitude,sample_number,building site,epicenter location)
+building_specific_realizations_mixed = zeros(100,50,50,51);
+
+% intialize 3D array to store event loss realizations
+% cell = (magnitude, sample, epicenter location)
+event_loss_realizations_mixed = zeros(100,50,51);
+
+% loop over number of magnitudes
+for i = 1:NM
+    % loop over number of epicenter locations
+    for j = 1:NEP
+        % loop over number of samples per event
+        for m = 1:50
+            % loop over the number of buildings
+            for k = 1:50
+                % define building ID for current building
+                buildingID = BuildingTypesAndCoordinates(k,3);
+
+                % extract current SaT1
+                current_SaT1 = reshape_shakeIM{i,m}(k,j);
+
+                if x(k) == 1 % if x for building k is 1, it is retrofitted
+                    % extract corresponding losses for retrofitted
+                    if current_SaT1 > max(intensityLevels)
+                        building_specific_realizations_mixed(i,m,k,j) = ...
+                            max(total_loss_retrofitted(:,buildingID));
+                    elseif current_SaT1 < min(intensityLevels)
+                         % retrofitted
+                         building_specific_realizations_mixed(i,m,k,j) = ...
+                            min(total_loss_retrofitted(:,buildingID));
+                    else
+                        % retrofitted
+                        building_specific_realizations_mixed(i,m,k,j) = ...
+                        interp1(intensityLevels,total_loss_retrofitted(:,buildingID),...
+                        current_SaT1);
+                    end
+                else % else it is existing
+                    % extract corresponding losses for existing
+                    if current_SaT1 > max(intensityLevels)
+                        % existing
+                        building_specific_realizations_mixed(i,m,k,j) = ...
+                            max(total_loss_existing(:,buildingID));
+                 
+                    elseif current_SaT1 < min(intensityLevels)
+                         building_specific_realizations_mixed(i,m,k,j) = ...
+                            min(total_loss_existing(:,buildingID));              
+                    else
+                        building_specific_realizations_mixed(i,m,k,j) = ...
+                        interp1(intensityLevels,total_loss_existing(:,buildingID),...
+                        current_SaT1); 
+                    end
+                end
+            end
+            % compute the reigonal loss for all buildings for current
+            % sample (existing and retrofitted)
+            event_loss_realizations_mixed(i,m,j) = ...
+            sum(building_specific_realizations_mixed(i,m,:,j));
+        end
+    end
+end
+
+% convert event loss realizations to a vector 
+event_loss_mixed = reshape(event_loss_realizations_mixed,[1,255000]);
+
+% compute minimum and maximum loss
+loss_min = min(event_loss_mixed);
+loss_max = max(event_loss_mixed);
+
+% define loss vector (horizontal axis of annual loss exceedance curve)
+loss_vector_mixed = loss_min:(loss_max-loss_min)/50:loss_max;
+
+% define lambda
+lambda = 0.01;
+
+% define lambda_rl vector  
+lambda_rl_mixed = zeros(1,length(loss_vector));
+
+% loop over the number of loss levels
+for i = 1:length(loss_vector_mixed)
+    % compute rate of exceedance of the current loss level
+    count = 0;
+    for j = 1:length(event_loss_mixed)
+        if event_loss_mixed(j) > loss_vector_mixed(i)
+            count = count + 1;
+        end
+    end
+    P_rl = count/255000;
+    lambda_rl_mixed(i) = P_rl * lambda;
+end
+
+% plot loss curve for the existing inventory (total loss horizontal axis,
+% annual exceedance rate vertical axis)
+figure
+plot(loss_vector_mixed,lambda_rl_mixed)
+title("Loss Curve for partially retrofitted inventory")
+xlabel("Total loss")
+ylabel("Annual rate of exceedance")
+saveas(gcf, "partialretrofit.png")
+
+figure
+hold on
+plot(loss_vector_mixed,lambda_rl_mixed)
+plot(loss_vector,lambda_rl)
+title("Loss Curves for partially retrofitted and existing inventory")
+xlabel("Total loss")
+ylabel("Annual rate of exceedance")
+legend('Partially retrofitted inventory','Existing inventory')
+saveas(gcf, "existpartialretrofit.png")
